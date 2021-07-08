@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  name: {{ .Release.Name }}-thousandeyes-k8s
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      hostname: {{ .Release.Name }}-k8s-probe
+      {{- if .Values.setnode.enabled }}
+      nodeName: {{ .Values.setnode.nodename }}
+      {{- end }}
+      containers:
+       - name: {{ .Release.Name }}-k8s-probe
+         image: 'thousandeyes/enterprise-agent:latest'
+         imagePullPolicy: Always
+         {{- if .Values.allow_outside_initiated_traffic.enabled }}
+         ports:
+         - containerPort: {{ .Values.allow_outside_initiated_traffic.port }}
+         {{- end }}
+         command:
+          - /sbin/my_init
+         securityContext:
+           capabilities:
+             add:
+               - NET_ADMIN
+               - SYS_ADMIN
+         env:
+           - name: TEAGENT_ACCOUNT_TOKEN
+             valueFrom:
+               secretKeyRef:
+                 name: {{ .Release.Name }}-secret 
+                 key: TEAGENT_ACCOUNT_TOKEN
+           - name: TEAGENT_INET
+             value: "4"
+         resources:
+             limits:
+               memory: 3584Mi
+             requests:
+               memory: 2000Mi
+         volumeMounts:
+         - name: te-vol1
+           mountPath: /var/lib/te-agent
+         - name: te-vol2
+           mountPath: /var/lib/te-browserbot
+         - name: te-vol3
+           mountPath: /var/log/agent
+      volumes:
+      - name: te-vol1
+      {{- if .Values.persistence.enabled }}
+        hostPath:
+          path: {{ .Values.persistence.directory_path }}{{ .Release.Name }}/te_agent
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: te-vol2
+      {{- if .Values.persistence.enabled }}
+        hostPath:
+          path: {{ .Values.persistence.directory_path }}{{ .Release.Name }}/te_browserbot
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: te-vol3
+      {{- if .Values.persistence.enabled }}
+        hostPath:
+          path: {{ .Values.persistence.directory_path }}{{ .Release.Name }}/te_log
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

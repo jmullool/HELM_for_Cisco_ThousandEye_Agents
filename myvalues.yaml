@@ -1,0 +1,15 @@
+## override Helm chart vlaues files
+
+account_token: <insert token> 
+
+setnode:
+  enabled: true
+  nodename: kubenode1
+
+persistence:
+  enabled: false 
+  directory_path: "/opt/thousandeyes/" 
+
+allow_outside_initiated_traffic:    
+  enabled: true
+  port: 30207

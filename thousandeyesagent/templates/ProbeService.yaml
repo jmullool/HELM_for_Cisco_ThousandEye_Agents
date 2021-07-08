@@ -1,0 +1,14 @@
+{{- if .Values.allow_outside_initiated_traffic.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service 
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Release.Name }}
+  ports:
+    - port: {{ .Values.allow_outside_initiated_traffic.port }}
+      targetPort: {{ .Values.allow_outside_initiated_traffic.port }}
+      nodePort: {{ .Values.allow_outside_initiated_traffic.port }}
+{{- end }}
