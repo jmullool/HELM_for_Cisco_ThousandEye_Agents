@@ -16,24 +16,30 @@ MTIzNDVBQkNERUY=
 
 (1) run the HELM install command and set custom values in the command line. These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. In the below example we are in the top level repo directory.
 
->**helm upgrade --install "release name" thousandeyesagent-0.1.0.tgz -n "namespace" \
->--set account_token="base64 account token"**
+```
+helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> \
+--set account_token=<base64 account token>
+```
 
 example:
->```helm upgrade --install john thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=MTIzNDVBQkNERUY=```
+```
+helm upgrade --install john thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=MTIzNDVBQkNERUY=
+```
 
 (2) run the HELM install command and set the custom values in a file (i.e. myvalues.yaml). These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
 
+```
 helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> -f <custom_values_file>
+```
 
 example:
->>>helm upgrade --install john thousandeyesagent-0.1.0.tgz --set -f myvalues.yaml 
-
+```
+helm upgrade --install john thousandeyesagent-0.1.0.tgz --set -f myvalues.yaml 
+```
 where myvalues.yaml: 
-
->>>account_token: MTIzNDVBQkNERUY=
-
-----------------------------------------------------------------------------------------------------------------
+```
+account_token: MTIzNDVBQkNERUY=
+```
 
 ## Installing the HELM chart with Advanced Settings
 
@@ -42,10 +48,11 @@ where myvalues.yaml:
 When setnode is enabled=true, a specific k8s cluster node can be selected to run the thousand eye agent pod. When enabled, set the nodename to match the desired node to deploy the pod. By default this is set to false.
 
 example:
->>>setnode:
->>>  enabled: true
->>>  nodename: kubenode1
-
+```
+setnode:
+  enabled: true
+  nodename: kubenode1
+```
 ### Persisting agent data after deletion and for re-deploys
 
 To persist data to a specific directory on the node (where the node can be set via setnode.nodename above), set the persistence flag. 
@@ -54,25 +61,29 @@ When persistence is enabled=false (default), kubernetes will mount an EmptyDir f
 
 When persistence is enabled=true, set the directory which will be mounted on the host, such as "/opt/thousandeyes/" (directory does not need to exist first). Log and agent data would then be saved at that path within a release name directory that is autocreated. This data will persist if the Deployment/HELM chart is deleted. If the same release named chart/deployment is now re-installed, the previous agent data will be picked up and the same agent name already on the the thousan eye dashboard will be used, including all test settings.
 
-example:
->>>persistence:
->>>  enabled: true
->>>  directory_path: /opt/thousandeyes/
-
-
->>>persistence:
->>>  enabled: false
->>>  directory_path: {}
-
+examples:
+```
+persistence:
+  enabled: true
+  directory_path: /opt/thousandeyes/
+```
+```
+persistence:
+  enabled: false
+  directory_path: {}
+```
 ### Opening a incoming port on the agent pod
 
 To open a specific port on the agent to receive "outside-to-inside" test traffic, where the traffic is initiated from the outside (note this is not required if the test is initiated from the inside (i.e. from the agent)), set allow_outside_initiated_traffic=true. Then set the unique (cluster wide) port number (from nodePort allowable range) that the incomming traffic will be received on. This will create a nodePort service and the port number can not overlap with a pre-existing service using the same port. 
 
 example:
->>>allow_outside_initiated_traffic:
->>>  enabled: true
->>>  port: 30000
-
->>>allow_outside_initiated_traffic:
->>>  enabled: false
->>>  port: {}
+```
+allow_outside_initiated_traffic:
+  enabled: true
+  port: 30000
+```
+```
+allow_outside_initiated_traffic:
+  enabled: false
+  port: {}
+```
