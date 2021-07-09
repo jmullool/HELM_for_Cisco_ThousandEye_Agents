@@ -68,9 +68,9 @@ To persist data to a specific directory on the node (where the node can be set v
 
 When persistence is enabled=false (default), kubernetes will mount an EmptyDir for all log and agent data (which is accessible at /var/lib/kubelet/pods/{podid}/volumes/kubernetes.io~empty-dir/ on the specific host, while the pod is created). When the pod/deployment/helm is deleted the EmptyDir is cleaned of it's data. You should then delete the agent from the thousand eye dashbaord. If you re-install with the same helm release name, a new agent will be created using a new log/data file location and the thousand eye dashboard will learn of a new agent (even if the previous agent was not deleted).
 
-When persistence is enabled=true, set the directory which will be mounted on the host, such as "/opt/thousandeyes/" (directory does not need to exist first). Log and agent data would then be saved at that path within a release name directory that is autocreated. This data will persist if the Deployment/HELM chart is deleted. If the same release named chart/deployment is now re-installed, the previous agent data will be picked up and the same agent name already on the the thousan eye dashboard will be used, including all test settings.
+When persistence is enabled=true, set the directory which will be mounted on the host, such as "/opt/thousandeyes/" (directory does not need to exist first). Log and agent data would then be saved at that path within a release name directory that is autocreated. This data will persist if the Deployment/HELM chart is deleted. If the same release named chart/deployment is now re-installed, the previous agent data will be picked up and the same agent name already on the the thousand eye dashboard will be used, including all existing test settings.
 
-examples myvalues.yaml:
+example myvalues.yaml:
 ```
 persistence:
   enabled: true
@@ -78,7 +78,7 @@ persistence:
 ```
 ### Opening a incoming port on the agent pod
 
-To open a specific port on the agent to receive "outside-to-inside" test traffic, where the traffic is initiated from the outside (note this is not required if the test is initiated from the inside (i.e. from the agent)), set allow_outside_initiated_traffic=true. Then set the unique (cluster wide) port number (from nodePort allowable range) that the incomming traffic will be received on. This will create a nodePort service and the port number can not overlap with a pre-existing service using the same port. 
+To open a specific port on the agent to receive "outside-to-inside" test traffic, where the traffic is initiated from the outside (note this is not required if the test is initiated from the inside (i.e. from the agent)), set allow_outside_initiated_traffic=true. Then set the **unique** (cluster wide) port number (from nodePort allowable range 30000-32767) that the incomming traffic will be received on. This will create a kubernetes NodePort service object. ***The port number can not overlap with a pre-existing service using the same portnumber.*** 
 
 example myvalues.yaml:
 ```
