@@ -1,4 +1,4 @@
-## override Helm chart vlaues files
+## sample override Helm chart values files
 
 account_token: <insert token> 
 
@@ -12,4 +12,7 @@ persistence:
 
 allow_outside_initiated_traffic:    
   enabled: true
-  port: 30207
+  port: 31001
+
+host_networking_mode:
+  enabled: false 

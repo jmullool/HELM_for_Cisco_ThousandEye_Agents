@@ -19,9 +19,12 @@ spec:
       {{- if .Values.setnode.enabled }}
       nodeName: {{ .Values.setnode.nodename }}
       {{- end }}
+      {{- if .Values.host_networking_mode.enabled }}
+      hostNetwork: true
+      {{- end }}
       containers:
        - name: {{ .Release.Name }}-k8s-probe
-         image: 'thousandeyes/enterprise-agent:latest'
+         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
          imagePullPolicy: Always
          {{- if .Values.allow_outside_initiated_traffic.enabled }}
          ports:

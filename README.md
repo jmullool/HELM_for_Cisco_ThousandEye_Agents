@@ -76,9 +76,19 @@ persistence:
   enabled: true
   directory_path: /opt/thousandeyes/
 ```
+### Enabling Host Networking
+
+This is an advanced topic, but if you would like the agent to use the IP of the host node interface (and not recieve an IP from the CNI overlay network), then enable this flag. The probe/pod will use the routing table of the host node to select an exiting interface and then use that IP as the source IP. Note if you have multiple NICs on the host this can get very complex. 
+
+example:
+```
+host_networking_mode:
+  enabled: true
+```
+ 
 ### Opening a incoming port on the agent pod
 
-To open a specific port on the agent to receive "outside-to-inside" test traffic, where the traffic is initiated from the outside (note this is not required if the test is initiated from the inside (i.e. from the agent)), set allow_outside_initiated_traffic=true. Then set the **unique** (cluster wide) port number (from nodePort allowable range 30000-32767) that the incomming traffic will be received on. This will create a kubernetes NodePort service object. ***The port number can not overlap with a pre-existing service using the same portnumber.*** 
+To open a specific port on the agent to receive "outside-to-inside" test traffic, where the traffic is initiated from the outside (note this is not required if the test source is initiated from the inside (i.e. from the agent)), set allow_outside_initiated_traffic=true. Then, if host_networking_mode is disabled, set the **unique** (cluster wide) port number (from nodePort allowable range 30000-32767) that the incomming traffic will be received on. This will create a kubernetes NodePort service object. If host_networking_mode is enabled, then no kubernetes service object is created as any IP on the host/node can be used but a **unique** (per node) port number is requried (no restriction on allowable range).  
 
 example myvalues.yaml:
 ```
@@ -86,3 +96,13 @@ allow_outside_initiated_traffic:
   enabled: true
   port: 30000
 ```
+
+When settign up a test stream on the Thousand Eye dashboard, select this agent to receive with port 30000. 
+
+###Tips on Target IP address selection for probe tests where NATs are involved
+
+When settign up a test stream on Thousand Eye dashboard, you will pick a "Target Agent" and a "Source Agent". You will set up the target "Server port" number under the Advanced Settings to match the port configured in your "allow_outside_initiated_traffic" setting. But where do we select the Target IP address to use? If you go to the Agent Settings screen and select your probe, you will see the Private and Public IPs of your probe. In the case of containers and kubernetes, you will see the pods CNI IP as the private IP if host_networking_mode is disabled and you will see the k8s node/host IP if host_networking_mode is enabled. Also, if host_networking is disabled and you are running test traffic targeting the agent from outside of your cluster, then the kubernetes Nodeport service object is used. In this case, the private IP still is shown as the CNI pod IP, but the target IP for tests needs to be set to any of the cluster node IPs (the NodePort service can use any node IP). Regardless, when running tests with private networks with containers, across NATs, you will likley need to set the "Target for Tests" IP address in the agent advanced settings screen. Depending on your test scenario, experimentation to set the right IP is required.
+
+
+   
+
