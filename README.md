@@ -14,7 +14,7 @@ MTIzNDVBQkNERUY=
 
 ### After cloning the repo, the HELM chart can be installed two ways:
 
-(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. In the below example we are in the top level repo directory.
+(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace..
 
 ```
 helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=<base64 account token>
@@ -22,7 +22,7 @@ helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace>
 
 example:
 ```
-helm upgrade --install john thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=MTIzNDVBQkNERUY=
+helm upgrade --install john thousandeyesagent-0.1.0.tgz --set account_token=MTIzNDVBQkNERUY=
 ```
 
 (2) run the HELM install command and set the custom values in a file (i.e. myvalues.yaml). These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
@@ -39,6 +39,8 @@ where myvalues.yaml:
 ```
 account_token: MTIzNDVBQkNERUY=
 ```
+
+Note: You can mix both of the install/upgrade options above such that you can specify command line parameters and also reference a file.
 
 ## Installing the HELM chart with Advanced Settings
 
@@ -99,7 +101,7 @@ allow_outside_initiated_traffic:
 
 When settign up a test stream on the Thousand Eye dashboard, select this agent to receive with port 30000. 
 
-###Tips on Target IP address selection for probe tests where NATs are involved
+### Tips on Target IP address selection for probe tests where NATs are involved
 
 When settign up a test stream on Thousand Eye dashboard, you will pick a "Target Agent" and a "Source Agent". You will set up the target "Server port" number under the Advanced Settings to match the port configured in your "allow_outside_initiated_traffic" setting. But where do we select the Target IP address to use? If you go to the Agent Settings screen and select your probe, you will see the Private and Public IPs of your probe. In the case of containers and kubernetes, you will see the pods CNI IP as the private IP if host_networking_mode is disabled and you will see the k8s node/host IP if host_networking_mode is enabled. Also, if host_networking is disabled and you are running test traffic targeting the agent from outside of your cluster, then the kubernetes Nodeport service object is used. In this case, the private IP still is shown as the CNI pod IP, but the target IP for tests needs to be set to any of the cluster node IPs (the NodePort service can use any node IP). Regardless, when running tests with private networks with containers, across NATs, you will likley need to set the "Target for Tests" IP address in the agent advanced settings screen. Depending on your test scenario, experimentation to set the right IP is required.
 
