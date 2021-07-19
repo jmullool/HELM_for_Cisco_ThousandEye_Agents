@@ -44,6 +44,17 @@ Note: You can mix both of the install/upgrade options above such that you can sp
 
 ## Installing the HELM chart with Advanced Settings
 
+### Changing the image in the override file. 
+
+By default the latest thousandeye agent container will be pulled. If you desire an different version, add the image version to your override file:
+
+example:
+```
+image:
+  repository: thousandeyes/enterprise-agent 
+  tag: 1:15 
+```
+
 ### Picking the specific host (node) to run the probe on
 
 When setnode is enabled=true, a specific k8s cluster node can be selected to run the thousand eye agent pod. When enabled, set the nodename to match the desired node to deploy the pod. By default this is set to false.
