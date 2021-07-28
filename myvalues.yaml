@@ -1,13 +1,13 @@
 ## sample override Helm chart values files
 
-account_token: <insert token> 
+account_token: THISISAFAKETOKEN!! 
 
 setnode:
   enabled: true
   nodename: kubenode1
 
 persistence:
-  enabled: false 
+  enabled: true 
   directory_path: "/opt/thousandeyes/" 
 
 allow_outside_initiated_traffic:    

@@ -6,7 +6,7 @@ This is a sample repo for deploying Cisco Thousand Eye Agent containers in a kub
 
 Get your account token in base 64 format and save the output. Use **"echo -n 'insert token' | base64"**
 
-example for token=12345ABCDEF:
+example for token=12345ABCDEF
 ```
 echo -n 12345ABCDEF | base64
 MTIzNDVBQkNERUY=
@@ -14,10 +14,10 @@ MTIzNDVBQkNERUY=
 
 ### After cloning the repo, the HELM chart can be installed two ways:
 
-(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace..
+(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace. 
 
 ```
-helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=<base64 account token>
+helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=base64 account token
 ```
 
 example:
