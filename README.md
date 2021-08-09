@@ -16,11 +16,12 @@ echo -n 12345ABCDEF | base64
 MTIzNDVBQkNERUY=
 ```
 
-### the HELM chart can be installed two ways:
+### Installing the HELM chart:
 
-The Thousand Eye Helm chart can be installed multiple ways. You can choose to use just the helm command line to set variables or you can point to a local override values file.We show both approaches below. Also, we are using the packaged helm chart in the below examples which has a <version> number. This version number may change in the future, so please insert the proper versiion number as needed. You can also use the un-packaged helm chart if you are making local modifications. Lastly, we are using the ***"helm upgrade --install"*** command which has the benefit of supporting upgrading an existing helm deployment or creating a new helm deployment if one does nto exist. 
+The Thousand Eye Helm chart can be installed multiple ways. You can choose to use just the helm command line to set needed variables or you can point to a local override values file. We show both approaches below. Also, we are using the packaged helm chart (thousandeyesagent-0.1.0.tgz) in the below examples which has a <version> number. This version number will change in the future, so please insert the proper version number as needed. If you clone the complete repo, you can also point to the un-packaged helm chart (thousandeyesagent) if you are making local modifications. Lastly, we are using the ***"helm upgrade --install"*** command which has the benefit of supporting both upgrading an existing helm deployment or creating a new helm deployment if one does not exist. 
 
-(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted (packaged) or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace. 
+#### Method 1- Installing with Helm CLI
+Run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted (packaged) or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace. 
 
 ```
 helm upgrade --install <release name> thousandeyesagent-<version>.tgz -n <namespace> --set account_token=<base64 account token>
@@ -30,8 +31,8 @@ example:
 ```
 helm upgrade --install john thousandeyesagent-0.1.0.tgz --set account_token=MTIzNDVBQkNERUY=
 ```
-
-(2) or run the HELM install command and set the custom values in a file (i.e. myvalues.yaml). These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
+#### Method 2- Installing with local vlaues override file
+Run the HELM install command and point to a custom values file (i.e. myvalues.yaml). These values will overwrite the same values in the chart's values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
 
 ```
 helm upgrade --install <release name> thousandeyesagent-<0.1.0>.tgz -n <namespace> -f <custom_values_file>
