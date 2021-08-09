@@ -1,10 +1,14 @@
 # Sample HELM chart for Cisco Thousand Eye Agent
 
-This is a sample repo for deploying Cisco Thousand Eye Agent containers in a kubernetes cluster via HELM. We have exposed several custom values which you can optionally change at run-time. The only requirement is that you insert your Thousand Eyes account token ID (in base64 format). By default, this chart will create a kubernetes secret object with your account token information and then it will create a kubernetes deployment which instantiates a pod with the agent container. By default no incoming ports are opened for incoming test streams (that is an advanced setting described below). Also, by default, all agent logs and config files are mounted in a kubernetes local emptyDir on the host running the pod, these files are removed when the HELM chart is deleted. This action can also can be changed in the advanced settings.
+This is a sample repo for deploying Cisco Thousand Eye Agent containers in a kubernetes cluster via HELM. We have exposed several custom values which you can optionally change at run-time. The only requirement is that you insert your Thousand Eyes account token ID (in base64 format). By default, this chart will create a kubernetes secret object with your account token information and then it will create a kubernetes deployment object which instantiates a pod with the agent container. By default no incoming ports are opened for incoming test streams (that is an advanced setting described below). Also, by default, all agent logs and config files are mounted in a kubernetes local emptyDir on the host running the pod, these files are removed when the HELM chart is deleted. This action can also can be changed in the advanced settings.
+
+## Prerequisits
+
+It is assumed you have a working kubernetes cluster supporting Helm version 3.0 and a helm client machine (we loaded the helm client on the kube master node). All testing has been done using kubernetes v1.20.5 and helm client v3.5.3. 
 
 ## Installing the HELM chart with the basic Default Settings
 
-Get your account token in base 64 format and save the output. Use **"echo -n 'insert token' | base64"**
+First get your Thousand Eye account token in base 64 format and save the output. Use **"echo -n 'insert token' | base64"**
 
 example for token=12345ABCDEF
 ```
@@ -12,12 +16,14 @@ echo -n 12345ABCDEF | base64
 MTIzNDVBQkNERUY=
 ```
 
-### After cloning the repo, the HELM chart can be installed two ways:
+### the HELM chart can be installed two ways:
 
-(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace. 
+The Thousand Eye Helm chart can be installed multiple ways. You can choose to use just the helm command line to set variables or you can point to a local override values file.We show both approaches below. Also, we are using the packaged helm chart in the below examples which has a <version> number. This version number may change in the future, so please insert the proper versiion number as needed. You can also use the un-packaged helm chart if you are making local modifications. Lastly, we are using the ***"helm upgrade --install"*** command which has the benefit of supporting upgrading an existing helm deployment or creating a new helm deployment if one does nto exist. 
+
+(1) run the HELM install command and set custom values in the command line with the "set" command. These values will overwrite the same values in the values.yaml file. The chart can either be extracted (packaged) or not. In the below example we are in the top level repo directory and installing the helm release "john" in the default namespace. 
 
 ```
-helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> --set account_token=base64 account token
+helm upgrade --install <release name> thousandeyesagent-<version>.tgz -n <namespace> --set account_token=<base64 account token>
 ```
 
 example:
@@ -25,10 +31,10 @@ example:
 helm upgrade --install john thousandeyesagent-0.1.0.tgz --set account_token=MTIzNDVBQkNERUY=
 ```
 
-(2) run the HELM install command and set the custom values in a file (i.e. myvalues.yaml). These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
+(2) or run the HELM install command and set the custom values in a file (i.e. myvalues.yaml). These values will overwrite the same values in the values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
 
 ```
-helm upgrade --install <release name> thousandeyesagent-0.1.0.tgz -n <namespace> -f <custom_values_file>
+helm upgrade --install <release name> thousandeyesagent-<0.1.0>.tgz -n <namespace> -f <custom_values_file>
 ```
 
 example:
@@ -40,7 +46,34 @@ where myvalues.yaml:
 account_token: MTIzNDVBQkNERUY=
 ```
 
-Note: You can mix both of the install/upgrade options above such that you can specify command line parameters and also reference a file.
+Note: You can mix both of the options above such that you can specify command line parameters and also reference a file.
+
+### Verify the deployment
+
+First verify the helm chart has status "deployed".
+
+```
+[root@kubemaster ~]# helm ls
+NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+john                    default         1               2021-07-28 19:43:16.269720261 +0000 UTC deployed        thousandeyesagent-0.2.0 1.16.0
+```
+
+Next, verify that all of the kubernetes objects have been created, this would include a kubernetes deployment object, a pod object and a secret object. If using advanced settings (see below), you may also have a services object. 
+
+```
+[root@kubemaster ~]# kubectl get deployments.apps
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+john-thousandeyes-k8s     1/1     1            1           11d
+
+[root@kubemaster ~]# kubectl get pods
+NAME                                       READY   STATUS    RESTARTS   AGE
+john-thousandeyes-k8s-5ff95c9fcc-lkf4b     1/1     Running   0          11d
+
+[root@kubemaster ~]# kubectl get secrets 
+NAME                                           TYPE                                  DATA   AGE
+john-secret                                    Opaque                                1      11d
+sh.helm.release.v1.john.v1                     helm.sh/release.v1                    1      11d
+```
 
 ## Installing the HELM chart with Advanced Settings
 
