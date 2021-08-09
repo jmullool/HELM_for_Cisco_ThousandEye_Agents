@@ -40,7 +40,7 @@ helm upgrade --install <release name> thousandeyesagent-<0.1.0>.tgz -n <namespac
 
 example:
 ```
-helm upgrade --install john thousandeyesagent-0.1.0.tgz --set -f myvalues.yaml 
+helm upgrade --install john thousandeyesagent-0.1.0.tgz -f myvalues.yaml 
 ```
 where myvalues.yaml: 
 ```
@@ -60,6 +60,7 @@ john                    default         1               2021-07-28 19:43:16.2697
 ```
 
 Next, verify that all of the kubernetes objects have been created, this would include a kubernetes deployment object, a pod object and a secret object. If using advanced settings (see below), you may also have a services object. 
+If you have proper networking configured to the Internet and have used the proper Thousan Eye account token, you should see the agent appear in your dashboard.
 
 ```
 [root@kubemaster ~]# kubectl get deployments.apps
