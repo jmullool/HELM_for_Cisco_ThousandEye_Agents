@@ -27,7 +27,7 @@ Run the HELM install command and set custom values in the command line with the 
 helm upgrade --install <release name> thousandeyesagent-<version>.tgz -n <namespace> --set account_token=<base64 account token>
 ```
 
-example:
+Example:
 ```
 helm upgrade --install john thousandeyesagent-0.1.0.tgz --set account_token=MTIzNDVBQkNERUY=
 ```
