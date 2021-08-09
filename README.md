@@ -31,7 +31,7 @@ example:
 ```
 helm upgrade --install john thousandeyesagent-0.1.0.tgz --set account_token=MTIzNDVBQkNERUY=
 ```
-#### Method 2- Installing with local vlaues override file
+#### Method 2- Installing with local values override file
 Run the HELM install command and point to a custom values file (i.e. myvalues.yaml). These values will overwrite the same values in the chart's values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
 
 ```
