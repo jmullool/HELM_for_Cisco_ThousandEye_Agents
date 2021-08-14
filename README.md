@@ -35,7 +35,7 @@ helm upgrade --install john thousandeyesagent-0.1.0.tgz --set account_token=MTIz
 Run the HELM install command and point to a custom values file (i.e. myvalues.yaml). These values will overwrite the same values in the chart's values.yaml file. The chart can either be extracted or not. A sample myvalues.yaml is included, but you can use any file name. In the below example we are in the top level repo directory.
 
 ```
-helm upgrade --install <release name> thousandeyesagent-<0.1.0>.tgz -n <namespace> -f <custom_values_file>
+helm upgrade --install <release name> thousandeyesagent-<version>.tgz -n <namespace> -f <custom_values_file>
 ```
 
 example:
@@ -65,15 +65,15 @@ If you have proper networking configured to the Internet and have used the prope
 ```
 [root@kubemaster ~]# kubectl get deployments.apps
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
-john-thousandeyes-k8s     1/1     1            1           11d
+john-thousandeyesagent    1/1     1            1           11d
 
 [root@kubemaster ~]# kubectl get pods
-NAME                                       READY   STATUS    RESTARTS   AGE
-john-thousandeyes-k8s-5ff95c9fcc-lkf4b     1/1     Running   0          11d
+NAME                                            READY   STATUS    RESTARTS   AGE
+john-thousandeyesagent-k8s-5ff95c9fcc-lkf4b     1/1     Running   0          11d
 
 [root@kubemaster ~]# kubectl get secrets 
 NAME                                           TYPE                                  DATA   AGE
-john-secret                                    Opaque                                1      11d
+john-thousandeyesagent                         Opaque                                1      11d
 sh.helm.release.v1.john.v1                     helm.sh/release.v1                    1      11d
 ```
 
